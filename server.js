@@ -37,7 +37,7 @@ app.get("/latest", (req, res) => {
 app.get("/dax-test", async (req, res) => {
     try {
         const url =
-            "https://api.londonstrategicedge.com/vault/candles?symbol=DE30%2FEUR&timeframe=1m&limit=10&order=desc";
+            "https://api.londonstrategicedge.com/vault/candles?symbol=DE30%2FEUR&timeframe=1m&limit=100&order=desc";
 
         const response = await fetch(url, {
             headers: {
