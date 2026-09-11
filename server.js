@@ -72,13 +72,45 @@ function calculateEMA(values, period) {
 const ema20 = calculateEMA(closes, 20);
 const ema50 = calculateEMA(closes, 50);
 
-const trend = ema20 > ema50 ? "Bullish" : "Bearish";        
+const trend = ema20 > ema50 ? "Bullish" : "Bearish";
+
+function calculateRSI(values, period = 14) {
+    let gains = 0;
+    let losses = 0;
+
+    for (let i = values.length - period; i < values.length; i++) {
+        const change = values[i] - values[i - 1];
+
+        if (change > 0) {
+            gains += change;
+        } else {
+            losses += Math.abs(change);
+        }
+    }
+
+    const averageGain = gains / period;
+    const averageLoss = losses / period;
+
+    if (averageLoss === 0) return 100;
+
+    const rs = averageGain / averageLoss;
+    return 100 - (100 / (1 + rs));
+}
+
+const rsi = calculateRSI(closes, 14);
+
+const momentum =
+    rsi > 55 ? "Bullish" :
+    rsi < 45 ? "Bearish" :
+    "Neutral";      
       
       res.json({
     symbol: "DE30/EUR",
     ema20: ema20,
     ema50: ema50,
-    trend: trend
+    trend: trend,
+    rsi: rsi,
+    momentum: momentum
 });
 
     } catch (error) {
