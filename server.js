@@ -74,6 +74,14 @@ const ema50 = calculateEMA(closes, 50);
 
 const trend = ema20 > ema50 ? "Bullish" : "Bearish";
 
+const currentPrice = closes[closes.length - 1];
+
+const distanceFromEMA20 =
+    Math.abs(currentPrice - ema20) / ema20;
+
+const pullback =
+    distanceFromEMA20 <= 0.0015;      
+
 function calculateRSI(values, period = 14) {
     let gains = 0;
     let losses = 0;
@@ -110,7 +118,9 @@ const momentum =
     ema50: ema50,
     trend: trend,
     rsi: rsi,
-    momentum: momentum
+    momentum: momentum,
+    currentPrice: currentPrice,
+    pullback: pullback
 });
 
     } catch (error) {
