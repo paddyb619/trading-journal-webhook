@@ -1,0 +1,12 @@
+{
+  "name": "trading-journal-webhook",
+  "version": "1.0.0",
+  "description": "Webhook service for TradingView alerts",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
