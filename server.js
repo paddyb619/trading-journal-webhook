@@ -95,7 +95,14 @@ const returnedToEMA =
 
 // A pullback requires BOTH
 const pullback =
-    movedAway && returnedToEMA;     
+    movedAway && returnedToEMA; 
+
+const previousPrice = closes[closes.length - 2];
+
+const confirmation =
+    trend === "Bullish"
+        ? currentPrice > previousPrice
+        : currentPrice < previousPrice;
 
 function calculateRSI(values, period = 14) {
     let gains = 0;
@@ -135,7 +142,8 @@ const momentum =
     rsi: rsi,
     momentum: momentum,
     currentPrice: currentPrice,
-    pullback: pullback
+    pullback: pullback,
+    confirmation: confirmation
 });
 
     } catch (error) {
