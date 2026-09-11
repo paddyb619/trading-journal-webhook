@@ -33,6 +33,36 @@ app.get("/latest", (req, res) => {
   res.json(latestAlert);
 });
 
+// Test live DAX 1-minute candles
+app.get("/dax-test", async (req, res) => {
+    try {
+        const url =
+            "https://api.londonstrategicedge.com/vault/candles?symbol=DE30%2FEUR&timeframe=1m&limit=10&order=desc";
+
+        const response = await fetch(url, {
+            headers: {
+                "x-api-key": process.env.LSE_API_KEY
+            }
+        });
+
+        if (!response.ok) {
+            return res.status(response.status).json({
+                error: "Market data request failed",
+                status: response.status
+            });
+        }
+
+        const candles = await response.json();
+        res.json(candles);
+
+    } catch (error) {
+        console.error("DAX fetch failed:", error);
+
+        res.status(500).json({
+            error: "Failed to fetch DAX data"
+        });
+    }
+});
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
