@@ -76,11 +76,26 @@ const trend = ema20 > ema50 ? "Bullish" : "Bearish";
 
 const currentPrice = closes[closes.length - 1];
 
+// How close price is to EMA20 right now
 const distanceFromEMA20 =
     Math.abs(currentPrice - ema20) / ema20;
 
+// Look at the previous 8 candles
+const recentCloses = closes.slice(-9, -1);
+
+// Was price previously clearly away from EMA20?
+const movedAway =
+    trend === "Bullish"
+        ? recentCloses.some(price => price > ema20 * 1.001)
+        : recentCloses.some(price => price < ema20 * 0.999);
+
+// Has price now returned close to EMA20?
+const returnedToEMA =
+    distanceFromEMA20 <= 0.0005;
+
+// A pullback requires BOTH
 const pullback =
-    distanceFromEMA20 <= 0.0015;      
+    movedAway && returnedToEMA;     
 
 function calculateRSI(values, period = 14) {
     let gains = 0;
