@@ -53,7 +53,33 @@ app.get("/dax-test", async (req, res) => {
         }
 
         const candles = await response.json();
-        res.json(candles);
+      const closes = candles
+    .slice()
+    .reverse()
+    .map(candle => candle.close);
+
+function calculateEMA(values, period) {
+    const multiplier = 2 / (period + 1);
+    let ema = values[0];
+
+    for (let i = 1; i < values.length; i++) {
+        ema = (values[i] - ema) * multiplier + ema;
+    }
+
+    return ema;
+}
+
+const ema20 = calculateEMA(closes, 20);
+const ema50 = calculateEMA(closes, 50);
+
+const trend = ema20 > ema50 ? "Bullish" : "Bearish";        
+      
+      res.json({
+    symbol: "DE30/EUR",
+    ema20: ema20,
+    ema50: ema50,
+    trend: trend
+});
 
     } catch (error) {
         console.error("DAX fetch failed:", error);
