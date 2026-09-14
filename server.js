@@ -104,6 +104,18 @@ const confirmation =
         ? currentPrice > previousPrice
         : currentPrice < previousPrice;
 
+const recentStructure = closes.slice(-6);
+
+const firstHalfAvg =
+    recentStructure.slice(0, 3).reduce((sum, price) => sum + price, 0) / 3;
+
+const secondHalfAvg =
+    recentStructure.slice(3).reduce((sum, price) => sum + price, 0) / 3;
+
+const structure =
+    trend === "Bullish"
+        ? secondHalfAvg > firstHalfAvg
+        : secondHalfAvg < firstHalfAvg;      
 function calculateRSI(values, period = 14) {
     let gains = 0;
     let losses = 0;
@@ -143,7 +155,8 @@ const momentum =
     momentum: momentum,
     currentPrice: currentPrice,
     pullback: pullback,
-    confirmation: confirmation
+    confirmation: confirmation,
+    structure: structure
 });
 
     } catch (error) {
