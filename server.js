@@ -146,6 +146,25 @@ const momentum =
     rsi < 45 ? "Bearish" :
     "Neutral";      
       
+    let score = 0;
+
+if (momentum === trend) score += 20;
+if (pullback) score += 20;
+if (confirmation) score += 20;
+if (structure) score += 20;
+
+// Extra weight for a clear EMA trend
+if (
+    (trend === "Bullish" && ema20 > ema50) ||
+    (trend === "Bearish" && ema20 < ema50)
+) {
+    score += 20;
+}
+
+const decision =
+    score >= 80 ? "GOOD SETUP" :
+    score >= 60 ? "WATCH" :
+    "WAIT";      
       res.json({
     symbol: "DE30/EUR",
     ema20: ema20,
@@ -156,7 +175,9 @@ const momentum =
     currentPrice: currentPrice,
     pullback: pullback,
     confirmation: confirmation,
-    structure: structure
+    structure: structure,
+    score: score,
+    decision: decision    
 });
 
     } catch (error) {
