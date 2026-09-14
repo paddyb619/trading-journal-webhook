@@ -106,6 +106,9 @@ const confirmation =
 
 const recentStructure = closes.slice(-6);
 
+const recentSwingLow = Math.min(...recentStructure);
+const recentSwingHigh = Math.max(...recentStructure);      
+
 const firstHalfAvg =
     recentStructure.slice(0, 3).reduce((sum, price) => sum + price, 0) / 3;
 
@@ -164,7 +167,35 @@ if (
 const decision =
     score >= 80 ? "GOOD SETUP" :
     score >= 60 ? "WATCH" :
-    "WAIT";      
+    "WAIT"; 
+let entry = null;
+let stopLoss = null;
+let target = null;
+let riskReward = null;
+
+if (decision === "GOOD SETUP") {
+    entry = currentPrice;
+
+    if (trend === "Bullish") {
+        stopLoss = recentSwingLow;
+
+        const risk = entry - stopLoss;
+
+        if (risk > 0) {
+            target = entry + (risk * 2);
+            riskReward = 2;
+        }
+    } else {
+        stopLoss = recentSwingHigh;
+
+        const risk = stopLoss - entry;
+
+        if (risk > 0) {
+            target = entry - (risk * 2);
+            riskReward = 2;
+        }
+    }
+}
       res.json({
     symbol: "DE30/EUR",
     ema20: ema20,
@@ -177,7 +208,11 @@ const decision =
     confirmation: confirmation,
     structure: structure,
     score: score,
-    decision: decision    
+    decision: decision,
+    entry: entry,
+    stopLoss: stopLoss,
+    target: target,
+    riskReward: riskReward    
 });
 
     } catch (error) {
